@@ -1238,17 +1238,32 @@ FILE *Q_fopen(const char *file, const char *mode)
 #else
 #include <sys/stat.h>
 #include <errno.h>
+#include <limits.h>
+#include <unistd.h>
 FILE *Q_fopen(const char *file, const char *mode)
 {
+	char buf[PATH_MAX] = {0};
+
+	if(*file != '/')
+	{
+		getcwd(buf, sizeof(buf));
+		strcat(buf, "/");
+		strcat(buf, file);
+	}
+	else
+	{
+		strcpy(buf, file);
+	}
+
 	// make sure it's a regular file and not a directory or sth, see #394
 	struct stat statbuf;
-	int statret = stat(file, &statbuf);
+	int statret = stat(buf, &statbuf);
 	// (it's ok if it doesn't exist though, maybe we wanna write/create)
 	if((statret == -1 && errno != ENOENT) || (statret == 0 && (statbuf.st_mode & S_IFREG) == 0))
 	{
 		return NULL;
 	}
-	return fopen(file, mode);
+	return fopen(buf, mode);
 }
 #endif
 
