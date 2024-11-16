@@ -110,7 +110,7 @@ main(int argc, char **argv)
 		}
 	}
 
-#ifndef __HAIKU__
+#if !defined(____HAIKU____) && !defined(__PROSPERO__)
 	/* Prevent running Quake II as root. Only very mad
 	   minded or stupid people even think about it. :) */
 	if (getuid() == 0)
