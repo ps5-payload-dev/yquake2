@@ -167,7 +167,7 @@ qboolean Sys_GetCwd(char *buf, size_t size)
 		return false;
 	}
 #endif
-	return Q_strlcat(buf, "/", size) == 1;
+	return Q_strlcat(buf, "/", size) < size;
 }
 
 
